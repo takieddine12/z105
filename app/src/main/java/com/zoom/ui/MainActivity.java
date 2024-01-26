@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
@@ -31,11 +32,23 @@ public class MainActivity extends AppCompatActivity {
                 float x = event.getX();
                 float y = event.getY();
                 switch (action) {
-                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_DOWN: {
+                        long downTime = SystemClock.uptimeMillis();
+                        long eventTime = SystemClock.uptimeMillis();
+                        MotionEvent downEvent = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_DOWN, x, y, 0);
+                        textView.dispatchTouchEvent(downEvent);
+                        textView.setText("X : " + event.getX() + " Y : " + event.getY());
+                    }
                     case MotionEvent.ACTION_MOVE:
-                    case MotionEvent.ACTION_UP:
-                        textView.setText("X : " + x + " Y : " + y);
-                        break;
+                    case MotionEvent.ACTION_UP: {
+                        // Create and dispatch a MotionEvent for releasing ('up' event)
+                        long downTime = SystemClock.uptimeMillis();
+                        long eventTime = SystemClock.uptimeMillis();
+                        MotionEvent upEvent = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP, x, y, 0);
+                        textView.dispatchTouchEvent(upEvent);
+                        textView.setText("X : " + event.getX() + " Y : " + event.getY());
+                    }
+                    break;
                 }
                 return true;
             }
